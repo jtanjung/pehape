@@ -85,7 +85,9 @@ abstract class BaseEventClass extends BaseClass
                 array_push($arguments, $method);
             }
 
-            array_unshift($arguments, $result);
+            if ($result !== null) {
+              array_unshift($arguments, $result);
+            }
 
             $event_result = call_user_func_array($event_listener, $arguments);
 
