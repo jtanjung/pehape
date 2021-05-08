@@ -59,7 +59,7 @@ trait HasProxyConfig
      *
      * @return ProxyConfig
      */
-    protected function GetProxy()
+    public function GetProxy()
     {
         $value = $this->Proxy instanceof ProxyConfig ? $this->Proxy : $this->__trigger("OnProxy", [$this]);
         /** Convert array value into ProxyConfig **/
