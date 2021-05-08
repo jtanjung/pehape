@@ -1,6 +1,7 @@
 <?php namespace Pehape\Traits;
 
 use Pehape\Configs\ProxyConfig;
+use Pehape\Helpers\Objects;
 
 trait HasProxyConfig
 {
@@ -49,6 +50,27 @@ trait HasProxyConfig
         ]);
 
         return $this;
+    }
+
+    /**
+     * Get the proxy information from ProxyConfig.
+     * If proxy config is not present, then try to retrieve the information
+     * from user-function callback by calling "OnProxy" trigger
+     *
+     * @return ProxyConfig
+     */
+    protected function GetProxy()
+    {
+        $value = $this->Proxy instanceof ProxyConfig ? $this->Proxy : $this->__trigger("OnProxy", [$this]);
+        /** Convert array value into ProxyConfig **/
+        if (is_array($value) && !Objects::IsSequentialIndexed($value)) {
+          $value = new ProxyConfig($value);
+        }
+        else {
+          $value = false;
+        }
+
+        return $value;
     }
 
 }

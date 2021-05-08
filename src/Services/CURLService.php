@@ -213,6 +213,8 @@ class CURLService extends BaseEventClass
             curl_setopt($this->ch, CURLOPT_USERPWD, $this->Auth->UserName . ":" . $this->Auth->Password);
         }
 
+        $this->Proxy = $this->GetProxy();
+
         if ($this->Proxy instanceof ProxyConfig) {
             curl_setopt($this->ch, CURLOPT_PROXYPORT, $this->Proxy->Port);
             curl_setopt($this->ch, CURLOPT_PROXY, $this->Proxy->IP);

@@ -82,6 +82,8 @@ class WebPageService extends BaseEventClass
         $options = new ChromeOptions();
         $this->plugin = false;
 
+        $this->Proxy = $this->GetProxy();
+
         if ($this->Proxy instanceof ProxyConfig) {
           /** Initialize sys directories **/
           $tempdir = realpath( __DIR__ . '/..' ) . "/dirs/temps/";
@@ -137,6 +139,8 @@ class WebPageService extends BaseEventClass
         /** Initialize firefox capabilities **/
         $this->Capabilities = DesiredCapabilities::firefox();
 
+        $this->Proxy = $this->GetProxy();
+        
         if ($this->Proxy instanceof ProxyConfig) {
           /** Assign proxy info **/
           $this->Capabilities = new DesiredCapabilities([
