@@ -61,7 +61,7 @@ trait HasProxyConfig
      */
     public function GetProxy()
     {
-        $value = $this->Proxy instanceof ProxyConfig ? $this->Proxy : $this->__trigger("OnProxy", [$this]);
+        $value = $this->Proxy instanceof ProxyConfig ? $this->Proxy : static::__trigger("OnProxy", [$this]);
         /** Convert array value into ProxyConfig **/
         if (is_array($value) && !Objects::IsSequentialIndexed($value)) {
           $value = new ProxyConfig($value);

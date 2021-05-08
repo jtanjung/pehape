@@ -288,7 +288,7 @@ class CURLService extends BaseEventClass
           "RatioSent" => $up_ratio
         ));
 
-        $this->__trigger("OnProgress", [$this->progress]);
+        static::__trigger("OnProgress", [$this->progress]);
     }
 
     /**

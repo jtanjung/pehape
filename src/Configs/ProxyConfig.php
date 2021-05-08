@@ -28,6 +28,12 @@ class ProxyConfig extends BaseConfig {
   	public $Port;
 
     /**
+     * Organization/host name
+     * @var string
+     */
+  	public $HostName;
+
+    /**
      * User name
      * @var string
      */
@@ -40,10 +46,10 @@ class ProxyConfig extends BaseConfig {
   	public $Password;
 
     /**
-     * Country name
+     * Location name
      * @var string
      */
-  	public $Country;
+  	public $Location;
 
     /**
      * Connection latency

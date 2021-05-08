@@ -55,9 +55,9 @@ class CURLConfig extends BaseConfig {
     {
         parent::__construct($attributes);
 
-        $this->CookieDir = realpath( __DIR__ . '/..' ) . "/dirs/cookies/";
-    		$this->VerboseLog = realpath( __DIR__ . '/..' ) . "/dirs/logs/";
-        $this->TempDir = realpath( __DIR__ . '/..' ) . "/dirs/temps/";
+        $this->CookieDir = realpath( __DIR__ . '/../..' ) . "/dirs/cookies/";
+    		$this->VerboseLog = realpath( __DIR__ . '/../..' ) . "/dirs/logs/";
+        $this->TempDir = realpath( __DIR__ . '/../..' ) . "/dirs/temps/";
         $this->temp_status = true;
     }
 

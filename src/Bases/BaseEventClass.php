@@ -21,7 +21,7 @@ abstract class BaseEventClass extends BaseClass
      * List of callable event listener
      * @var array
      */
-    protected $event_listener = array();
+    protected static $event_listener = array();
 
     /**
      * Bind callback event for each method call
@@ -36,7 +36,7 @@ abstract class BaseEventClass extends BaseClass
             throw new \InvalidArgumentException(Message::$NOT_EVENT);
         }
 
-        $this->event_listener[ $key ] = $value;
+        static::$event_listener[$key] = $value;
         return $this;
     }
 
@@ -48,8 +48,8 @@ abstract class BaseEventClass extends BaseClass
      */
     public function Unbind($key)
     {
-        if (@$this->event_listener[ $key ]) {
-            unset($this->event_listener[ $key ]);
+        if (@static::$event_listener[$key]) {
+            unset(static::$event_listener[$key]);
         }
         return $this;
     }
@@ -63,13 +63,13 @@ abstract class BaseEventClass extends BaseClass
      * @param mixed $result
      * @return mixed
      */
-    protected function __trigger($method, $args = array(), $result = null)
+    protected static function __trigger($method, $args = array(), $result = null)
     {
-        $event_listener = @$this->event_listener[ $method ];
+        $event_listener = @static::$event_listener[$method];
         $global_event = false;
 
         if (! $event_listener) {
-            $event_listener = @$this->event_listener[ 'OnEvent' ];
+            $event_listener = @static::$event_listener['OnEvent'];
             $global_event = true;
         }
 
@@ -100,12 +100,45 @@ abstract class BaseEventClass extends BaseClass
     }
 
     /**
+     * Activate/deactivate global event listener "OnEvent"
+     *
+     * @param bool $value
+     * @return self
+     */
+    public function Listener(bool $value)
+    {
+        if ($this->instance instanceof self) {
+          $this->instance->Unbind('OnEvent');
+          if ($value) {
+            $this->instance->Bind('OnEvent', static::__events);
+          }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Used as gateway for the global event listener "OnEvent" trigger by
+     * the "instance" object. This function should be used in child class
+     * to receive "instance" notification, then child class will trigger
+     * intended method to end interface event listener.
+     *
+     * @return mixed
+     */
+    protected static function __events()
+    {
+        $arguments = func_get_args();
+        $method = array_pop($arguments);
+        return static::__trigger($method, $arguments);
+    }
+
+    /**
      * Use by magic function __call to retrieve method context
      *
      * @param string $method
      * @return mixed
      */
-    protected function __callContext($method)
+    protected function __callContext(&$method)
     {
         if (method_exists($this, $method)) {
           return $this;
@@ -131,6 +164,6 @@ abstract class BaseEventClass extends BaseClass
     {
         $context = $this->__callContext($method);
         $result = call_user_func_array(array($context, $method), $args);
-        return $this->__trigger("On" . ucfirst($method), $args, $result);
+        return static::__trigger("On" . ucfirst($method), $args, $result);
     }
 }

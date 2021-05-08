@@ -109,4 +109,14 @@ class BaseStdClass implements \JsonSerializable, \IteratorAggregate
         return (sizeof($this->_properties) == 0);
     }
 
+    /**
+     * Empty the properties
+     *
+     * @return void
+     */
+    public function empty()
+    {
+        $this->_properties = [];
+    }
+
 }

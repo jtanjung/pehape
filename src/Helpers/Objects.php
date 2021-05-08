@@ -56,6 +56,36 @@ class Objects {
     }
 
     /**
+     * Convert given value to an array or object
+     *
+     * @param mixed $value
+     * @param bool $mode
+     * @return mixed
+     */
+    public static function ToList($value, $mode = false)
+    {
+        if (! is_string($value)) {
+          return $value;
+        }
+
+        /**
+         * Get the first and last char to determine whether the value
+         * is a valid JSON string.
+         */
+        $string = trim($value);
+        $first = $string[0];
+        $last = substr($string, -1);
+        $bracket = $first . $last;
+
+        /** Check if the first and last char are in "[],{}" **/
+        if (in_array($bracket, ['[]', '{}'])) {
+          return json_decode($string, $mode);
+        }
+
+        return $value;
+    }
+
+    /**
      * Trim single level array values
      *
      * @param array $array
