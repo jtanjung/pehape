@@ -125,7 +125,7 @@ abstract class BaseEventClass extends BaseClass
      *
      * @return mixed
      */
-    protected static function __events()
+    public static function __events()
     {
         $arguments = func_get_args();
         $method = array_pop($arguments);
