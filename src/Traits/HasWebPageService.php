@@ -1,7 +1,5 @@
 <?php namespace Pehape\Traits;
 
-use Pehape\Configs\AuthConfig;
-
 trait HasWebPageService
 {
 
