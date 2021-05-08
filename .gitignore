@@ -1,4 +1,7 @@
 /vendor/
+dirs/cookies/
+dirs/logs/
+dirs/temps/
 node_modules/
 npm-debug.log
 yarn-error.log
