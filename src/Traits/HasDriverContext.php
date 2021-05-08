@@ -18,6 +18,12 @@ trait HasDriverContext
     protected $driver_dir;
 
     /**
+     * Driver initiate function callback name
+     * @var string
+     */
+    protected $driver_callback;
+
+    /**
      * Use by magic function __call to retrieve method context
      *
      * @param string $method
@@ -29,6 +35,7 @@ trait HasDriverContext
         if ($this->DriverExists($method)) {
           $context = $this->driver_namespace . "\\$method";
           if (! is_a($this->instance, $context) && class_exists($context)) {
+            $method = $this->driver_callback;
             $this->instance = new $context;
             return $this->instance;
           }
