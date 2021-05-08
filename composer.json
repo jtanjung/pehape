@@ -1,0 +1,35 @@
+{
+  "name": "jtanjung/pehape",
+  "description": "A collection of PHP libs",
+  "homepage": "https://github.com/jtanjung/pehape",
+  "authors": [
+    {
+      "name": "Julian Tanjung",
+      "email": "gudangsoft@gmail.com",
+      "homepage": "http://binarylab.org",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+      "php-webdriver/webdriver": "^1.11.0",
+      "ext-SimpleXML": "^8.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Pehape\\": "src/"
+    }
+  },
+  "autoload-dev": {
+      "psr-4": {
+          "Pehape\\Tests\\": "tests"
+      }
+  },
+  "scripts": {
+      "post-install-cmd": [
+          "sudo chmod -R 777 dirs"
+      ],
+      "post-update-cmd": [
+        "sudo chmod -R 777 dirs"
+      ]
+  }
+}
