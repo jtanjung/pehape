@@ -27,7 +27,7 @@ class BaseConfig extends BaseObject implements \JsonSerializable
      * Determine whether the config file should use domain name or subdomain as encryption salt keey
      * @var boolean
      */
-    public $DomainEncrypt = false;
+    public $DomainSalt = false;
 
     /**
      * Log status
@@ -40,16 +40,6 @@ class BaseConfig extends BaseObject implements \JsonSerializable
      * @var boolean
      */
     protected $EncryptConfigFile = false;
-
-    /**
-     * Class constructor
-     *
-     * @param array $attributes
-     */
-    public function __construct($attributes = null)
-    {
-        parent::__construct($attributes);
-    }
 
     /**
      * Get secret key for config file encryption/decryption
@@ -76,16 +66,16 @@ class BaseConfig extends BaseObject implements \JsonSerializable
     }
 
     /**
-         * Serializes the object to a value that can be serialized natively by json_encode()
-         *
-         * @param int $level
-         * @return array
-         */
+     * Serializes the object to a value that can be serialized natively by json_encode()
+     *
+     * @param int $level
+     * @return array
+     */
     public function jsonSerialize()
     {
         $attributes = get_object_vars($this);
-        unset($attributes['OnValidation']);
         unset($attributes['ConfigFile']);
+        unset($attributes['DomainSalt']);
         unset($attributes['Log']);
         return $attributes;
     }
@@ -110,7 +100,7 @@ class BaseConfig extends BaseObject implements \JsonSerializable
         if ($this->EncryptConfigFile) {
             $salt_value = $salt;
             if (! $salt_value) {
-                $salt_value = $this->DomainEncrypt ? URL::DomainName($_SERVER[ 'HTTP_HOST' ]) : $_SERVER[ 'HTTP_HOST' ];
+                $salt_value = $this->DomainSalt ? URL::DomainName($_SERVER[ 'HTTP_HOST' ]) : $_SERVER[ 'HTTP_HOST' ];
             }
 
             $crypto_engine = new CryptoService();
@@ -150,7 +140,7 @@ class BaseConfig extends BaseObject implements \JsonSerializable
         if ($this->EncryptConfigFile && file_exists($this->ConfigFile)) {
             $salt_value = $salt;
             if (! $salt_value) {
-                $salt_value = $this->DomainEncrypt ? URL::DomainName($_SERVER[ 'HTTP_HOST' ]) : $_SERVER[ 'HTTP_HOST' ];
+                $salt_value = $this->DomainSalt ? URL::DomainName($_SERVER[ 'HTTP_HOST' ]) : $_SERVER[ 'HTTP_HOST' ];
             }
 
             $crypto_engine = new CryptoService();

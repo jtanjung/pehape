@@ -100,13 +100,23 @@ class BaseStdClass implements \JsonSerializable, \IteratorAggregate
     }
 
     /**
+     * Count the properties
+     *
+     * @return int
+     */
+    public function count()
+    {
+        return count($this->_properties);
+    }
+
+    /**
      * Check if property is not empty
      *
      * @return boolean
      */
     public function is_empty()
     {
-        return (sizeof($this->_properties) == 0);
+        return ($this->count() == 0);
     }
 
     /**
