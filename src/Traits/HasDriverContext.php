@@ -9,19 +9,35 @@ trait HasDriverContext
      * Driver namespace path
      * @var string
      */
-    protected $driver_namespace;
+    protected $namespace;
 
     /**
      * Driver directory path
      * @var string
      */
-    protected $driver_dir;
+    protected $directory;
 
     /**
-     * Driver initiate function callback name
-     * @var string
+     * Use by magic function __call to retrieve method context
+     *
+     * @param string $value
+     * @return bool
      */
-    protected $driver_callback;
+    protected function DriverExists($value)
+    {
+        /** Check drivers dir existance **/
+        if ($this->directory && file_exists($this->directory)) {
+          /** Fetch all available drivers **/
+          $drivers = glob($this->directory . "/*.php", GLOB_BRACE);
+          foreach ($drivers as $driver) {
+            if ($value == File::BaseName($driver)) {
+              return true;
+            }
+          }
+        }
+
+        return false;
+    }
 
     /**
      * Use by magic function __call to retrieve method context
@@ -33,9 +49,8 @@ trait HasDriverContext
     {
         /** Check driver class existance **/
         if ($this->DriverExists($method)) {
-          $context = $this->driver_namespace . "\\$method";
+          $context = $this->namespace . "\\$method";
           if (! is_a($this->instance, $context) && class_exists($context)) {
-            $method = $this->driver_callback;
             $this->instance = new $context;
             return $this->instance;
           }
@@ -46,25 +61,24 @@ trait HasDriverContext
     }
 
     /**
-     * Use by magic function __call to retrieve method context
+     * Magic function to call method
      *
-     * @param string $value
-     * @return bool
+     * @param string $method
+     * @param array $args
+     * @return mixed
      */
-    protected function DriverExists($value)
+    public function __call($method, $args = array())
     {
-        /** Check drivers dir existance **/
-        if ($this->driver_dir && file_exists($this->driver_dir)) {
-          /** Fetch all available drivers **/
-          $drivers = glob($this->driver_dir . "/*.php", GLOB_BRACE);
-          foreach ($drivers as $driver) {
-            if ($value == File::BaseName($driver)) {
-              return true;
-            }
-          }
+        $context = $this->__callContext($method);
+
+        /** Check if context equal to instance **/
+        if ($this->instance === $context) {
+          return $context;
         }
 
-        return false;
+        // Trigger intended function
+        $result = call_user_func_array(array($context, $method), $args);
+        return static::__trigger("On" . ucfirst($method), $args, $result);
     }
 
 }
