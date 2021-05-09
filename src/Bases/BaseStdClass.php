@@ -136,7 +136,6 @@ class BaseStdClass implements \JsonSerializable, \IteratorAggregate
      */
     public function random()
     {
-        $this->_properties = [];
         $keys = array_keys($this->_properties);
         $key = array_rand($keys);
         return $this->_properties[$key];
