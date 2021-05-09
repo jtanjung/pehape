@@ -140,7 +140,7 @@ class WebPageService extends BaseEventClass
         $this->Capabilities = DesiredCapabilities::firefox();
 
         $this->Proxy = $this->GetProxy();
-        
+
         if ($this->Proxy instanceof ProxyConfig) {
           /** Assign proxy info **/
           $this->Capabilities = new DesiredCapabilities([
@@ -211,6 +211,16 @@ class WebPageService extends BaseEventClass
           }
           $this->plugin = false;
         }
+    }
+
+    /**
+     * An alias for quit() method
+     *
+     * @return void
+     */
+    public function Close()
+    {
+        $this->quit();
     }
 
 }

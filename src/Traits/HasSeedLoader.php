@@ -17,6 +17,8 @@ trait HasSeedLoader
     public function Seed()
     {
         $this->Load($this->endpoint)->doseed();
+        // Terminate the service
+        $this->Close();
         return $this;
     }
 
