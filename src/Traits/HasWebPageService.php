@@ -11,6 +11,9 @@ trait HasWebPageService
      */
     protected function Load($value = null)
     {
+        // Notify event listener about process preparation
+        static::__trigger('OnLoading');
+
         /** Choose browser randomly **/
         $randoms = ['Chrome', 'FireFox'];
         $browser = $randoms[array_rand($randoms)];

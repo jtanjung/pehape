@@ -11,6 +11,8 @@ trait HasCURLService
      */
     protected function Load($value)
     {
+        // Notify event listener about process preparation
+        static::__trigger('OnLoading');
         return $this->Get($value);
     }
 
