@@ -76,6 +76,8 @@ class BaseConfig extends BaseObject implements \JsonSerializable
         $attributes = get_object_vars($this);
         unset($attributes['ConfigFile']);
         unset($attributes['DomainSalt']);
+        unset($attributes['OnValidation']);
+        unset($attributes['EncryptConfigFile']);
         unset($attributes['Log']);
         return $attributes;
     }
