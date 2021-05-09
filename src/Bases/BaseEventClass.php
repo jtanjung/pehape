@@ -125,11 +125,38 @@ abstract class BaseEventClass extends BaseClass
      *
      * @return mixed
      */
-    public static function __events()
+    protected static function __events()
     {
         $arguments = func_get_args();
         $method = array_pop($arguments);
         return static::__trigger($method, $arguments);
+    }
+    /**
+     * Magic function to set property
+     *
+     * @param string $key
+     * @param mixed $value
+     * @return void
+     */
+    public function __set($key, $value)
+    {
+        if (property_exists($this, $key)) {
+          $this->$key = $value;
+        }
+        if (is_object($this->instance)) {
+          $this->instance->$key = $value;
+        }
+    }
+
+    /**
+     * Magic function to get property
+     *
+     * @param string $key
+     * @return mixed
+     */
+    public function &__get($key)
+    {
+        return property_exists($this, $key) ? $this->$key : $this->instance->$key;
     }
 
     /**
