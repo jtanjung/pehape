@@ -58,4 +58,40 @@ trait HasCache
         return $this;
     }
 
+    /**
+     * Get a single cache entry
+     *
+     * @param mixed $key
+     * @return mixed
+     */
+    public function Get($key = null)
+    {
+        /** Check if cache is instance of Option **/
+        if ($this->cache instanceof Option) {
+          /** Return random value for unspecified key **/
+          if (is_null($key)) {
+            return $this->cache->random();
+          }
+          return !is_string($key) ? $this->cache : $this->cache->$key;
+        }
+
+        return $this->cache;
+    }
+
+    /**
+     * Get a single cache entry
+     *
+     * @param mixed $key
+     * @return void
+     */
+    public function Set($key, $value)
+    {
+        /** Check if cache is instance of Option **/
+        if ($this->cache instanceof Option) {
+          $this->cache->$key = $value;
+        }
+
+        $this->SaveCache();
+    }
+
 }
