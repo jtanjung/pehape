@@ -1,6 +1,7 @@
 <?php namespace Pehape\Traits;
 
 use Pehape\Configs\ProxyConfig;
+use Pehape\Models\Option;
 use Pehape\Helpers\Objects;
 
 trait HasProxyConfig
@@ -78,8 +79,8 @@ trait HasProxyConfig
         if ($value instanceof ProxyConfig) {
           return $value;
         }
-        /** Convert array value into ProxyConfig **/
-        if (is_array($value) && !Objects::IsSequentialIndexed($value)) {
+        /** Convert array or Option value into ProxyConfig **/
+        if ($value instanceof Option || (is_array($value) && !Objects::IsSequentialIndexed($value))) {
           return new ProxyConfig($value);
         }
 
