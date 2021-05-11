@@ -31,7 +31,13 @@ trait HasProxyConfig
           $this->Proxy = $ip;
           return $this;
         }
-        
+
+        /** Check if first parameter is an array **/
+        if (is_array($ip) && !Objects::IsSequentialIndexed($ip)) {
+          $this->Proxy = new ProxyConfig($ip);
+          return $this;
+        }
+
         $port = (int)$arguments[1];
         $username = $password = false;
         $type = 'HTTP';
