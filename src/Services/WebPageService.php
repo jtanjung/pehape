@@ -49,6 +49,12 @@ class WebPageService extends BaseEventClass
     private $plugin;
 
     /**
+     * Connection and request timeout
+     * @var int
+     */
+  	protected $timeout = 0;
+
+    /**
      * Class constructor
      *
      * @return void
@@ -187,7 +193,17 @@ class WebPageService extends BaseEventClass
      */
     public function Create()
     {
-        $this->instance = RemoteWebDriver::create($this->host, $this->Capabilities);
+        if ($this->timeout > 0) {
+          $this->instance = RemoteWebDriver::create(
+            $this->host,
+            $this->Capabilities,
+            $this->timeout * 1000,
+            $this->timeout * 1000
+          );
+        }
+        else {
+          $this->instance = RemoteWebDriver::create($this->host, $this->Capabilities);
+        }
         return $this;
     }
 
