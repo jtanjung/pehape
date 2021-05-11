@@ -187,6 +187,18 @@ class WebPageService extends BaseEventClass
     }
 
     /**
+     * Set connection and request timeout
+     *
+     * @param int $value
+     * @return self
+     */
+    public function SetTimeOut(int $value)
+    {
+        $this->timeout = $value;
+        return $this;
+    }
+
+    /**
      * Create remote web browser
      *
      * @return self
