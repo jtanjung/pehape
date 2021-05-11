@@ -13,7 +13,9 @@ trait HasCURLService
     {
         // Notify event listener about process preparation
         static::__trigger('OnLoading');
-        return $this->Get($value);
+        $this->instance->SetUrl($value);
+        $this->instance->Execute();
+        return $this;
     }
 
 }
