@@ -1,6 +1,5 @@
 <?php namespace Pehape\Bases;
 
-use Pehape\Bases\BaseObject;
 use Pehape\Services\CryptoService;
 use Pehape\Helpers\URL;
 

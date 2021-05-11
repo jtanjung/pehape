@@ -52,6 +52,19 @@ class File {
   	}
 
     /**
+     * Get source path of the given object
+     *
+     * @param object $value
+     * @param bool $filename, true to include filename
+     * @return string
+     */
+    public static function ClassPath(object $value, bool $filename = false)
+    {
+        $reflection = new \ReflectionClass($value);
+        return $filename ? $reflection->getFileName() : dirname($reflection->getFileName());
+    }
+
+    /**
      * Format file size
      *
      * @param int $value

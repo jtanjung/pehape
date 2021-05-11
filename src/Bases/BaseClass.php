@@ -1,10 +1,5 @@
 <?php namespace Pehape\Bases;
 
-if (! isset($_SESSION)) {
-    session_start();
-}
-
-use BaseConfig;
 use Pehape\Supports\LogFactory;
 use Pehape\Constants\Message;
 
@@ -136,7 +131,7 @@ abstract class BaseClass
      * @return void
      */
     protected function DoConfigChange()
-    {      
+    {
     }
 
     /**

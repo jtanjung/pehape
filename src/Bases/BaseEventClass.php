@@ -1,6 +1,5 @@
 <?php namespace Pehape\Bases;
 
-use Pehape\Bases\BaseClass;
 use Pehape\Bases\BaseConfig;
 use Pehape\Constants\Message;
 

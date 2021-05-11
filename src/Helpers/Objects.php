@@ -1,5 +1,7 @@
 <?php namespace Pehape\Helpers;
 
+use Pehape\Models\EventCallback;
+
 /**
  * Interface Object
  * @package Pehape\Helpers
@@ -191,7 +193,7 @@ class Objects {
      * @param mixed $default
      * @return mixed
      */
-    public static function ExecuteEventCallback( \Pehape\Models\EventCallback $value, $default = NULL )
+    public static function ExecuteEventCallback( EventCallback $value, $default = NULL )
     {
       	if( ! $value instanceof \Pehape\Models\EventCallback ){
       		return $default;
