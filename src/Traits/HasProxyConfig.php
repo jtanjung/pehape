@@ -26,6 +26,12 @@ trait HasProxyConfig
     {
         $arguments = func_get_args();
         $ip = $arguments[0];
+        /** Check if first parameter is an instance of ProxyConfig **/
+        if ($ip instanceof ProxyConfig) {
+          $this->Proxy = $ip;
+          return $this;
+        }
+        
         $port = (int)$arguments[1];
         $username = $password = false;
         $type = 'HTTP';
