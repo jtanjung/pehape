@@ -106,7 +106,7 @@ abstract class BaseEventClass extends BaseClass
      */
     public function Listener(bool $value)
     {
-        if ($this->instance instanceof self) {
+        if ($this->instance instanceof BaseEventClass) {
           $this->instance->Unbind('OnEvent');
           if ($value) {
             $this->instance->Bind('OnEvent', static::__events);
