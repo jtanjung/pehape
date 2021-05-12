@@ -4,30 +4,40 @@ trait HasSeedLoader
 {
 
     /**
-     * Seed provider endpoint
+     * URL endpoint
      * @var string
      */
     protected $endpoint;
 
     /**
-     * Start seeding
+     * Proceed the request
      *
      * @return self
      */
-    public function Seed()
+    public function Proceed()
     {
-        $this->Load($this->endpoint)->doseed();
+        $this->Load($this->endpoint)->doextract();
         // Terminate the service
         $this->Close();
         return $this;
     }
 
     /**
-     * An abstract method to extract the seed data.
+     * An alias for Proceed method
+     *
+     * @return self
+     */
+    public function Seed()
+    {
+        return $this->Proceed();
+    }
+
+    /**
+     * An abstract method to extract informations from the page dom/response.
      * This method must be re-define in the child class.
      *
      * @return self
      */
-    abstract protected function doseed();
+    abstract protected function doextract();
 
 }
