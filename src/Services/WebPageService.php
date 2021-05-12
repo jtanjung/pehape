@@ -98,8 +98,8 @@ class WebPageService extends BaseEventClass
 
         if ($this->Proxy instanceof ProxyConfig) {
           /** Initialize sys directories **/
-          $tempdir = realpath( __DIR__ . '/..' ) . "/dirs/temps/";
-          $proxydir = realpath( __DIR__ . '/..' ) . "/dirs/sys/var/proxy";
+          $tempdir = realpath( __DIR__ . '/../..' ) . "/dirs/temps/";
+          $proxydir = realpath( __DIR__ . '/../..' ) . "/dirs/sys/var/proxy";
           $this->plugin = "$tempdir/proxy" . uniqid() . '.zip';
 
           /** Create proxy zip file **/
