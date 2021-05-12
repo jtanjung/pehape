@@ -88,6 +88,16 @@ class Util {
   	}
 
     /**
+     * Get OS environtment
+     *
+     * @return string
+     */
+  	public static function OS()
+  	{
+        return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? 'Windows' : PHP_OS;
+  	}
+
+    /**
      * Check if a process is running
      *
      * @param string $value
@@ -100,15 +110,23 @@ class Util {
   	}
 
     /**
-     * Run a cli process
+     * Run a background process
      *
      * @param string $value
-     * @param bool $wait
      * @return boolean
      */
-  	public static function Run($value, $wait = false)
+  	public static function Run($value)
   	{
-    		exec($value, $output, $return);
+        if (self::OS() === 'Windows') {
+          // Run a windows process
+          $command = strpos($command, ' >NUL') === false ? $value . ' >NUL 2>NUL' : $value;
+          pclose(popen('start /B cmd /C "' . $command . '"', 'r'));
+          return true;
+        }
+
+        // Run a linux process
+        $command = strpos($command, ' > /dev/null') === false ? $value . ' > /dev/null 2>/dev/null &"' : $value;
+        exec($command, $output, $return);
         return $return === 0;
   	}
 
