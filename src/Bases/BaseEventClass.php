@@ -23,6 +23,18 @@ abstract class BaseEventClass extends BaseClass
     protected static $event_listener = array();
 
     /**
+     * Exception instance class name
+     * @var string
+     */
+    protected $exception = "\\RuntimeException";
+
+    /**
+     * Determine whether exception will be thrown by the __saveCall method
+     * @var bool
+     */
+    protected $silent_mode = true;
+
+    /**
      * Bind callback event for each method call
      *
      * @param string $key
@@ -50,6 +62,17 @@ abstract class BaseEventClass extends BaseClass
         if (@static::$event_listener[$key]) {
             unset(static::$event_listener[$key]);
         }
+        return $this;
+    }
+
+    /**
+     * Set silent mode
+     *
+     * @return self
+     */
+    public function Silent(bool $value)
+    {
+        $this->silent_mode = $value;
         return $this;
     }
 
@@ -159,6 +182,45 @@ abstract class BaseEventClass extends BaseClass
     }
 
     /**
+     * Use to execute a function inside exception handler try catch
+     *
+     * @param function $method
+     * @param mixed $return
+     * @param array $parameters
+     * @return self
+     */
+    protected function __safeCall($method, &$return = null, array $parameters = [])
+    {
+        // Initiate return value
+        $result = false;
+
+        try {
+
+          // Execute the method
+          $return = call_user_func_array($method, $parameters);
+          $result = true;
+
+        } catch (\Exception $e) {
+
+          // Trigger exception
+          $exception = $this->exception;
+          $exception = new $exception($e->getMessage());
+          // Check if silent mode is disabled
+          if (! $this->silent_mode) {
+            // Throw the exception
+            throw $exception;
+          }
+          else {
+            // Include the exception as a parameter, so it can be thrown
+            // by user function/listener 'OnError'
+            static::__trigger('OnError', [$e->getMessage(), $exception]);
+          }
+        }
+
+        return $result;
+    }
+
+    /**
      * Use by magic function __call to retrieve method context
      *
      * @param string $method
@@ -189,7 +251,7 @@ abstract class BaseEventClass extends BaseClass
     public function __call($method, $args = array())
     {
         $context = $this->__callContext($method);
-        $result = call_user_func_array(array($context, $method), $args);
+        $this->__safeCall(array($context, $method), $result, $args);
         return static::__trigger("On" . ucfirst($method), $args, $result);
     }
 }

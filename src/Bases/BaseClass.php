@@ -63,7 +63,7 @@ abstract class BaseClass
      * @param array $config
      * @return self
      */
-    public function SetConfigArray($config)
+    public function SetConfigArray($config = [])
     {
         if (! $this->config instanceof BaseConfig && $this->config_instance) {
             $this->config = new $this->config_instance;
@@ -82,7 +82,7 @@ abstract class BaseClass
     public function LoadConfigFile($value)
     {
         if (! file_exists($value)) {
-            throw new \RuntimeException(sprintf(Message::$NO_CONFIG_FILE, $value));
+          return $this->SetConfigArray();
         }
 
         $configs = @include($value);

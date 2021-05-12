@@ -1,14 +1,12 @@
 <?php
-date_default_timezone_set( "Asia/Jakarta" );
 require_once "../vendor/autoload.php";
 
 use Pehape\Services\CURLService;
 
 $curl = new CURLService();
-
 /********************************BROWSE PAGE**********************************/
 //You can assign proxy information directly to the curl service
-//$curl->SetProxy('176.113.73.101', 3128);
+//$curl->SetProxy('<IP>', <PORT>);
 
 //Or you can provide the proxy information when needed. The return value from
 //"OnProxy" event listener will be used as proxy information.

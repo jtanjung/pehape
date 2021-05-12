@@ -10,7 +10,6 @@ use Pehape\Constants\RequestType;
 use Pehape\Constants\CURLMessage;
 use Pehape\Helpers\URL;
 use Pehape\Helpers\Util;
-use Pehape\Exceptions\CURLException;
 use Pehape\Traits\HasProxyConfig;
 use Pehape\Traits\HasAuthConfig;
 use Pehape\Models\RequestProgress;
@@ -109,6 +108,12 @@ class CURLService extends BaseEventClass
   	protected $userAgent;
 
     /**
+     * Exception instance class name
+     * @var string
+     */
+    protected $exception = "\\Pehape\\Exceptions\\CURLException";
+
+    /**
      * List of available user agents
      * @var array
      */
@@ -173,6 +178,9 @@ class CURLService extends BaseEventClass
      */
     protected function initCURL()
     {
+        // Notify user callback
+        static::__trigger('OnPrepare');
+
         $this->Close();
         $this->ch = curl_init();
 
@@ -451,34 +459,38 @@ class CURLService extends BaseEventClass
      */
     public function Execute()
     {
-        if( ! $this->options[ "CURLOPT_URL" ] ){
-          throw new CURLException(CURLMessage::$INVALID_URL);
-        }
-
         if($this->request_id === null){
           $this->request_id = md5(Util::RandomString());
         }
 
-        try {
-            $this->initCURL();
-            $this->response = curl_exec($this->ch);
-            $this->response = trim($this->response);
-            $this->http_code = curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
-            $this->error_number = curl_errno($this->ch);
-            $this->error_string = curl_error($this->ch);
-        } catch (\Exception $e) {
-            $this->Close();
-            throw new CURLException($e->getMessage());
-        }
+        $send = $this->__safeCall(function(){
+          // Initiate curl session
+          $this->initCURL();
+          // Execute curl requqest
+          $this->response = curl_exec($this->ch);
+          // Get reqquest result
+          $this->response = trim($this->response);
+          $this->http_code = curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
+          $this->error_number = curl_errno($this->ch);
+          $this->error_string = curl_error($this->ch);
 
-        $this->response_code = ResponseCode::$OK;
+          // Check for request failure
+          if ($this->error_string) {
+            throw new \RuntimeException($this->error_string);
+          }
 
-        if (empty($this->response)) {
-            if ($this->max_retry > 0) {
-                $this->max_retry = $this->max_retry - 1;
-                return $this->Execute();
-            }
-            $this->response_code = ResponseCode::$NO_RESPONSE;
+        });
+
+        if ($send === true) {
+          $this->response_code = ResponseCode::$OK;
+
+          if (empty($this->response)) {
+              if ($this->max_retry > 0) {
+                  $this->max_retry = $this->max_retry - 1;
+                  return $this->Execute();
+              }
+              $this->response_code = ResponseCode::$NO_RESPONSE;
+          }
         }
 
         $this->reset()->Close();
@@ -493,24 +505,24 @@ class CURLService extends BaseEventClass
      */
     public function Download(string $destination)
     {
-        try {
-            $destination_file = fopen($destination, "wb");
-            if ($destination_file) {
-                $this->options[ "CURLOPT_FILE" ] = $destination_file;
-                $this->options[ "CURLOPT_CONNECTTIMEOUT" ] = 0;
-                $this->options[ "CURLOPT_TIMEOUT" ] = 0;
-                $result = $this->Execute();
-                fclose($destination_file);
+        $send = $this->__safeCall(function()use($destination){
 
-                return $result;
-            }
+          // Initiate file handler
+          $destination_file = fopen($destination, "wb");
+          // Check if file handler existance
+          if ($destination_file) {
+              $this->options[ "CURLOPT_FILE" ] = $destination_file;
+              $this->options[ "CURLOPT_CONNECTTIMEOUT" ] = 0;
+              $this->options[ "CURLOPT_TIMEOUT" ] = 0;
+              $result = $this->Execute();
+              fclose($destination_file);
 
-        } catch (\Exception $e) {
-            $this->Close();
-            throw new CURLException($e->getMessage());
-        }
+              return $result;
+          }
 
-        return false;
+        }, $return);
+
+        return $send ? $return : false;
     }
 
     /**
@@ -573,6 +585,9 @@ class CURLService extends BaseEventClass
         if ($this->ch) {
             curl_close($this->ch);
             $this->ch = false;
+
+            // Notify user callback
+            static::__trigger('OnClose');
         }
 
         if ($this->fh) {

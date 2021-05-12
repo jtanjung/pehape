@@ -55,6 +55,12 @@ class WebPageService extends BaseEventClass
   	protected $timeout = 0;
 
     /**
+     * Exception instance class name
+     * @var string
+     */
+    protected $exception = "\\Pehape\\Exceptions\\WebDriverException";
+
+    /**
      * Class constructor
      *
      * @return void
@@ -205,17 +211,28 @@ class WebPageService extends BaseEventClass
      */
     public function Create()
     {
-        if ($this->timeout > 0) {
-          $this->instance = RemoteWebDriver::create(
-            $this->host,
-            $this->Capabilities,
-            $this->timeout * 1000,
-            $this->timeout * 1000
-          );
+        // Notify user callback
+        static::__trigger('OnPrepare');
+        // Safe create web driver
+        $create = $this->__safeCall(function(){
+          if ($this->timeout > 0) {
+            $this->instance = RemoteWebDriver::create(
+              $this->host,
+              $this->Capabilities,
+              $this->timeout * 1000,
+              $this->timeout * 1000
+            );
+          }
+          else {
+            $this->instance = RemoteWebDriver::create($this->host, $this->Capabilities);
+          }
+        });
+
+        // Check for web driver existance
+        if (! $create) {
+          $this->quit();
         }
-        else {
-          $this->instance = RemoteWebDriver::create($this->host, $this->Capabilities);
-        }
+
         return $this;
     }
 
@@ -239,6 +256,9 @@ class WebPageService extends BaseEventClass
           }
           $this->plugin = false;
         }
+
+        // Notify user callback
+        static::__trigger('OnClose');
     }
 
     /**

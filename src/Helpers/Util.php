@@ -119,13 +119,13 @@ class Util {
   	{
         if (self::OS() === 'Windows') {
           // Run a windows process
-          $command = strpos($command, ' >NUL') === false ? $value . ' >NUL 2>NUL' : $value;
+          $command = strpos($value, ' >NUL') === false ? $value . ' >NUL 2>NUL' : $value;
           pclose(popen('start /B cmd /C "' . $command . '"', 'r'));
           return true;
         }
 
         // Run a linux process
-        $command = strpos($command, ' > /dev/null') === false ? $value . ' > /dev/null 2>/dev/null &"' : $value;
+        $command = strpos($value, ' > /dev/null') === false ? $value . ' > /dev/null 2>/dev/null &"' : $value;
         exec($command, $output, $return);
         return $return === 0;
   	}
