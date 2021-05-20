@@ -1,6 +1,8 @@
 <?php namespace Pehape\Traits;
 
 use Pehape\Configs\AuthConfig;
+use Pehape\Models\Option;
+use Pehape\Helpers\Objects;
 
 trait HasAuthConfig
 {

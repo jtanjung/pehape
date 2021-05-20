@@ -123,7 +123,10 @@ class WebPageService extends BaseEventClass
 
         /** Set window visibility option **/
         if (! $this->show_window) {
-          $options->addArguments(["--headless","--disable-gpu", "--no-sandbox"]);
+          $options->addArguments(["--headless","--disable-gpu", "--no-sandbox", "--start-maximized"]);
+        }
+        else {
+          $options->addArguments(["--start-maximized"]);
         }
 
         $this->Capabilities->setCapability(ChromeOptions::CAPABILITY, $options);
