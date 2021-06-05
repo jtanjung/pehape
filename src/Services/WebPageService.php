@@ -157,17 +157,22 @@ class WebPageService extends BaseEventClass
         $this->Proxy = $this->GetProxy();
 
         if ($this->Proxy instanceof ProxyConfig) {
+          /** Set proxy config **/
+          $proxy = [
+            'proxyType' => $this->Proxy->Type,
+            'httpProxy' => $this->Proxy->IP . ':' . $this->Proxy->Port,
+            'sslProxy' => $this->Proxy->IP . ':' . $this->Proxy->Port,
+            'ftpProxy' => $this->Proxy->IP . ':' . $this->Proxy->Port
+          ];
+          /** Check if authentication info is present **/
+          if ($this->Proxy->UserName && $this->Proxy->Password) {
+            $proxy['socksUsername'] = $this->Proxy->UserName;
+            $proxy['socksPassword'] = $this->Proxy->Password;
+          }
           /** Assign proxy info **/
           $this->Capabilities = new DesiredCapabilities([
               WebDriverCapabilityType::BROWSER_NAME => 'firefox',
-              WebDriverCapabilityType::PROXY => [
-                'proxyType' => 'manual',
-                'httpProxy' => $this->Proxy->IP . ':' . $this->Proxy->Port,
-                'sslProxy' => $this->Proxy->IP . ':' . $this->Proxy->Port,
-                'ftpProxy' => $this->Proxy->IP . ':' . $this->Proxy->Port,
-                'socksUsername' => $this->Proxy->UserName,
-                'socksPassword' => $this->Proxy->Password
-              ]
+              WebDriverCapabilityType::PROXY => $proxy
           ]);
         }
 
