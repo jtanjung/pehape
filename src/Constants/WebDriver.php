@@ -16,5 +16,15 @@ class WebDriver {
      */
     public static $FIREFOX = "geckodriver";
 
+    /**
+     * Chrome browser function name
+     */
+    public static $chrome = "Chrome";
+
+    /**
+     * Firefox browser function name
+     */
+    public static $firefox = "FireFox";
+
 
 }

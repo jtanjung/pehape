@@ -1,7 +1,15 @@
 <?php namespace Pehape\Traits;
 
+use Pehape\Constants\WebDriver;
+
 trait HasWebPageService
 {
+
+    /**
+     * Web driver name
+     * @var string
+     */
+    protected $browser;
 
     /**
      * Start web page loading using a random browser
@@ -15,8 +23,8 @@ trait HasWebPageService
         static::__trigger('OnLoading');
 
         /** Choose browser randomly **/
-        $randoms = ['Chrome', 'FireFox'];
-        $browser = $randoms[array_rand($randoms)];
+        $randoms = [WebDriver::$chrome, WebDriver::$firefox];
+        $browser = is_string($this->browser) ? $this->browser : $randoms[array_rand($randoms)];
         /** Create the connection **/
         $this->instance->$browser()->Create();
         /** Check url value paramater existance **/
