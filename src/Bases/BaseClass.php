@@ -10,11 +10,11 @@ use Pehape\Constants\Message;
 abstract class BaseClass
 {
 
-      /**
-       * config
-       * @var BaseConfig
-       */
-    protected $config;
+    /**
+     * config
+     * @var BaseConfig
+     */
+    public $config;
 
     /**
      * Logger

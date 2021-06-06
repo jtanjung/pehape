@@ -1,4 +1,4 @@
 {
-  "command": "geckodriver > /dev/null 2>/dev/null &",
+  "command": "geckodriver",
   "host": "http://localhost:4444"
 }

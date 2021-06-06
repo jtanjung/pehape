@@ -4,6 +4,7 @@ namespace Pehape\Configs;
 use Pehape\Bases\BaseConfig;
 use Pehape\Models\Option;
 use Pehape\Helpers\File;
+use Pehape\Helpers\Util;
 
 /**
  * Class WebDriverConfig
@@ -32,7 +33,7 @@ class WebDriverConfig extends BaseConfig {
 
         /** Define sys directories **/
         $configdir = realpath( __DIR__ . '/../..' ) . "/dirs/sys";
-        $bindir = "$configdir/bin/";
+        $bindir = "$configdir/bin/" . Util::OS_BitVersion() . "/";
 
         /** Load configuration from json file **/
         $configs = glob("$configdir/var/*.json", GLOB_BRACE);

@@ -1,0 +1,4 @@
+{
+  "command": "operadriver --port=4445",
+  "host": "http://localhost:4445"
+}

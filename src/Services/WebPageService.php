@@ -189,6 +189,56 @@ class WebPageService extends BaseEventClass
     }
 
     /**
+     * Initiate opera browser
+     *
+     * @return self
+     */
+    public function Opera()
+    {
+        /** Check if the driver is running **/
+        if (! Util::IsRunning(WebDriver::$OPERA)) {
+          /** Run driver **/
+          if (!Util::Run($this->config->Setting->opera->command)) {
+            throw new \RuntimeException(
+                sprintf(Message::$CLI_FAILED, $this->config->Setting->opera->command)
+            );
+          }
+        }
+
+        /** Initialize firefox capabilities **/
+        $this->Capabilities = DesiredCapabilities::opera();
+
+        $this->Proxy = $this->GetProxy();
+
+        if ($this->Proxy instanceof ProxyConfig) {
+          /** Set proxy config **/
+          $proxy = [
+            'proxyType' => $this->Proxy->Type,
+            'httpProxy' => $this->Proxy->IP . ':' . $this->Proxy->Port,
+            'sslProxy' => $this->Proxy->IP . ':' . $this->Proxy->Port,
+            'ftpProxy' => $this->Proxy->IP . ':' . $this->Proxy->Port
+          ];
+          /** Check if authentication info is present **/
+          if ($this->Proxy->UserName && $this->Proxy->Password) {
+            $proxy['socksUsername'] = $this->Proxy->UserName;
+            $proxy['socksPassword'] = $this->Proxy->Password;
+          }
+          /** Assign proxy info **/
+          $this->Capabilities = new DesiredCapabilities([
+              WebDriverCapabilityType::BROWSER_NAME => 'opera',
+              WebDriverCapabilityType::PROXY => $proxy
+          ]);
+        }
+
+        /** Set window visibility option **/
+        if (! $this->show_window) {
+        }
+
+        $this->host = $this->config->Setting->opera->host;
+        return $this;
+    }
+
+    /**
      * Set hidden state
      *
      * @param bool $value

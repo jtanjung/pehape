@@ -98,6 +98,19 @@ class Util {
   	}
 
     /**
+     * Get OS bit size
+     *
+     * @param string $value
+     * @return string
+     */
+  	public static function OS_BitVersion()
+  	{
+        $bitsize = PHP_INT_SIZE === 4 ? '32' : '64';
+        $osname = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? 'win' : strtolower(PHP_OS);
+        return $osname . $bitsize;
+  	}
+
+    /**
      * Check if a process is running
      *
      * @param string $value
@@ -113,11 +126,23 @@ class Util {
      * Run a background process
      *
      * @param string $value
-     * @return boolean
+     * @param boolean $wait
+     * @return mixed
      */
-  	public static function Run($value)
+  	public static function Run($value, $wait = false)
   	{
         if (self::OS() === 'Windows') {
+          // Check if process should wait for the result
+          if (!$wait) {
+            // Start the buffer
+            ob_start();
+            // Execute the command
+            $result = shell_exec($value);
+            // CLean the buffer
+            ob_end_clean();
+
+            return $result;
+          }
           // Run a windows process
           $command = strpos($value, ' >NUL') === false ? $value . ' >NUL 2>NUL' : $value;
           pclose(popen('start /B cmd /C "' . $command . '"', 'r'));
@@ -125,9 +150,9 @@ class Util {
         }
 
         // Run a linux process
-        $command = strpos($value, ' > /dev/null') === false ? $value . ' > /dev/null 2>/dev/null &"' : $value;
+        $command = strpos($value, ' > /dev/null') === false && !$wait ? $value . ' > /dev/null 2>/dev/null &' : $value;
         exec($command, $output, $return);
-        return $return === 0;
+        return !$wait ? $return === 0 : $output;
   	}
 
 }

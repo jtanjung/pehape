@@ -17,6 +17,11 @@ class WebDriver {
     public static $FIREFOX = "geckodriver";
 
     /**
+     * Opera driver executable file name
+     */
+    public static $OPERA = "operadriver";
+
+    /**
      * Chrome browser function name
      */
     public static $chrome = "Chrome";
@@ -25,6 +30,11 @@ class WebDriver {
      * Firefox browser function name
      */
     public static $firefox = "FireFox";
+
+    /**
+     * Opera browser function name
+     */
+    public static $opera = "Opera";
 
 
 }
