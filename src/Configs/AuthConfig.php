@@ -11,14 +11,51 @@ class AuthConfig extends BaseConfig
 {
 
     /**
-     * User name
+     * Account title
+     * @var string
+     */
+    public $Title;
+
+    /**
+     * Account first name
+     * @var string
+     */
+    public $FirstName;
+
+    /**
+     * Account last name
+     * @var string
+     */
+    public $LastName;
+
+    /**
+     * Account user name
      * @var string
      */
     public $UserName;
 
     /**
-     * Password
+     * Account password
      * @var string
      */
     public $Password;
+
+    /**
+     * Account gender
+     * @var string
+     */
+    public $Gender;
+
+    /**
+     * Primary email(alt email) address
+     * @var string
+     */
+    public $Email;
+
+    /**
+     * Account phone number
+     * @var string
+     */
+    public $Phone;
+
 }
