@@ -409,18 +409,22 @@ class WebPageService extends BaseEventClass
     {
         // Set the random coordinates count
         $count = strlen($value);
+        // Set initial variables
+        $index = 0;
+        $values = '';
         // Generate random coordinate
-        while ($count > 0) {
+        while ($index < $count) {
           // Move pointer to the element
           $this->instance->getMouse()->mouseMove($element->getCoordinates());
-          $this->instance->getMouse()->click();
+          $element->click();
           // Fill a char to the element
-          $this->instance->getKeyboard()->sendKeys($value[$count]);
+          $values .= $value[$index];
+          $element->sendKeys($values);
           // Halt for few milliseconds before continue
           $halt = rand(0.2, 0.5);
           sleep($halt);
           // count decrement
-          $count--;
+          $index++;
         }
 
         // Return the element
