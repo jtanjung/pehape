@@ -376,14 +376,21 @@ class WebPageService extends BaseEventClass
 
         // Push element to the buffer
         $elements[] = $element;
+        // Set initial value for the Y coordinate
+        $position = 0;
         // Move the mouse to each coordinates
         foreach ($elements as $elm) {
           // Scroll to the element position
-          $this->instance->executeScript("arguments[0].scrollIntoView(true);", [$elm]);
+          $this->instance->executeScript(
+            "window.scrollTo(arguments[0], arguments[1]);",
+            [$position, $elm->getCoordinates()->onPage()->getY()]
+          );
           // Move the mouse pointer
           $this->instance->getMouse()->mouseMove($elm->getCoordinates());
           // Notify the event listener for the new coordinates
           static::__trigger('OnMouseMove', [$elm->getCoordinates()]);
+          // Reassign Y value
+          $position = $elm->getCoordinates()->onPage()->getY();
         }
 
         // Return the element
