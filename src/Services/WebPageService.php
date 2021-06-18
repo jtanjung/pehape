@@ -8,6 +8,9 @@ use Facebook\WebDriver\WebDriverExpectedCondition;
 use Facebook\WebDriver\Cookie;
 use Facebook\WebDriver\Remote\WebDriverCapabilityType;
 use Facebook\WebDriver\Chrome\ChromeOptions;
+use Facebook\WebDriver\Interactions\Internal\WebDriverCoordinates;
+use Facebook\WebDriver\WebDriverElement;
+use Facebook\WebDriver\WebDriverPoint;
 use Pehape\Configs\ProxyConfig;
 use Pehape\Traits\HasProxyConfig;
 use Pehape\Helpers\Util;
@@ -317,6 +320,89 @@ class WebPageService extends BaseEventClass
 
         // Notify user callback
         static::__trigger('OnClose');
+    }
+
+    /**
+     * Get random element of a web page
+     *
+     * @param WebDriverElement $value
+     * @return WebDriverElement
+     */
+  	public function RandomElement(WebDriverElement $value = null)
+  	{
+        // Get a random selector
+        $index    = array_rand(WebDriver::$selectors);
+        $selector = WebDriver::$selectors[$index];
+        // Set the xpath selector
+        $selector = '//' . $selector . '[@id!=""]';
+        // Find the specific element
+        $elements = $this->instance->findElements(WebDriverBy::xpath($selector));
+        $element  = false;
+        // Get the selected element
+        $element = !count($elements) ? $this->RandomElement($value) : $elements[0];
+        // Return the result if the paramater is not present
+        if (! $value instanceof WebDriverElement) {
+          return $element;
+        }
+        // Check if the element is unique
+        if ($value->getTagName() == $element->getTagName() &&
+            $value->getID() == $element->getID()) {
+            $element = $this->RandomElement($value);
+        }
+
+        // Return the element
+        return $element;
+  	}
+
+    /**
+     * Mimic human mouse movement
+     *
+     * @param WebDriverElement $element
+     * @return WebDriverElement
+     */
+    public function HumanMouseLike(WebDriverElement $element)
+    {
+        // Get the browser window size
+        $dimension = $this->instance->manage()->window()->getSize();
+        $width  = $dimension->getWidth(); // Window width
+        $height = $dimension->getHeight(); // Window height
+
+        // Prepare html tags for random selection
+        $selectors = [];
+
+        // Set the random coordinates count
+        $count = rand(5, 15);
+        // Prepare coordinate buffer
+        $coordinates = [];
+        // Initiate coordinate values
+        $x = $y = 0;
+        // Generate random coordinate
+        while ($count > 0) {
+          // Generate coordinate value
+          $x = rand($x, $width);
+          $y = rand($y, $height);
+          // Push a new coordinate value to the buffer
+          $coordinates[] = new WebDriverCoordinates(
+            null,
+            static function(){},
+            static function() use ($x, $y){ return new WebDriverPoint($x, $y); },
+            $this->RandomElement($element)->getID()
+          );
+          // count decrement
+          $count--;
+        }
+
+        // Push element coordinate to the buffer
+        $coordinates[] = $element->getCoordinates();
+        // Move the mouse to each coordinates
+        foreach ($coordinates as $coordinate) {
+          $this->instance->getMouse()->mouseMove($coordinate);
+          // Notify the event listener for the new coordinates
+          static::__trigger('OnMouseMove', [$coordinate]);
+        }
+
+        // Return the element
+        return $element;
     }
 
     /**

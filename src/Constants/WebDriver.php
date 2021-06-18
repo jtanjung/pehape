@@ -36,5 +36,14 @@ class WebDriver {
      */
     public static $opera = "Opera";
 
+    /**
+     * HTML tags use for random selection
+     */
+    public static $selectors = [
+      'div', 'span', 'label', 'img', 
+      'table', 'th', 'tr', 'td', 'thead', 'tbody', 'tfoot',
+      'input', 'select', 'button'
+    ];
+
 
 }

@@ -21,7 +21,13 @@ $driver->Bind('OnPrepare', function(){
 $driver->Bind('OnClose', function(){
   echo "Request complete... \n";
 });
-$driver->Chrome()->Create();
+$driver->Bind('OnMouseMove', function($coordinate){
+  $x = $coordinate->onPage()->getX();
+  $y = $coordinate->onPage()->getY();
+  echo "Mouse coordinate = $x, $y \n";
+});
+$driver->Chrome()->Create()->Window(true);
 $driver->get('https://www.google.com/');
-$driver->findElement(WebDriverBy::tagName('img'));
+$doodle = $driver->findElement(WebDriverBy::tagName('img'));
+$driver->HumanMouseLike($doodle);
 $driver->quit();
