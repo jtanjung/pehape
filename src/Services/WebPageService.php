@@ -362,43 +362,25 @@ class WebPageService extends BaseEventClass
      */
     public function HumanMouseLike(WebDriverElement $element)
     {
-        // Get the browser window size
-        $dimension = $this->instance->manage()->window()->getSize();
-        $width  = $dimension->getWidth(); // Window width
-        $height = $dimension->getHeight(); // Window height
-
-        // Prepare html tags for random selection
-        $selectors = [];
-
         // Set the random coordinates count
         $count = rand(5, 15);
-        // Prepare coordinate buffer
-        $coordinates = [];
-        // Initiate coordinate values
-        $x = $y = 0;
+        // Prepare element buffer
+        $elements = [];
         // Generate random coordinate
         while ($count > 0) {
-          // Generate coordinate value
-          $x = rand($x, $width);
-          $y = rand($y, $height);
-          // Push a new coordinate value to the buffer
-          $coordinates[] = new WebDriverCoordinates(
-            null,
-            static function(){},
-            static function() use ($x, $y){ return new WebDriverPoint($x, $y); },
-            $this->RandomElement($element)->getID()
-          );
+          // Push a new element value to the buffer
+          $elements[] = $this->RandomElement($element);
           // count decrement
           $count--;
         }
 
-        // Push element coordinate to the buffer
-        $coordinates[] = $element->getCoordinates();
+        // Push element to the buffer
+        $elements[] = $element;
         // Move the mouse to each coordinates
-        foreach ($coordinates as $coordinate) {
-          $this->instance->getMouse()->mouseMove($coordinate);
+        foreach ($elements as $elm) {
+          $this->instance->getMouse()->mouseMove($elm->getCoordinates());
           // Notify the event listener for the new coordinates
-          static::__trigger('OnMouseMove', [$coordinate]);
+          static::__trigger('OnMouseMove', [$elm->getCoordinates()]);
         }
 
         // Return the element

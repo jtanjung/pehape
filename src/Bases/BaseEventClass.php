@@ -178,7 +178,13 @@ abstract class BaseEventClass extends BaseClass
      */
     public function &__get($key)
     {
-        return property_exists($this, $key) ? $this->$key : @$this->instance->$key;
+        $result = null;
+        try {
+          $result = property_exists($this, $key) ? $this->$key : @$this->instance->$key;
+        } catch (\Exception $e) {
+        }
+
+        return $result;
     }
 
     /**
