@@ -345,8 +345,9 @@ class WebPageService extends BaseEventClass
           return $element;
         }
         // Check if the element is unique
-        if ($value->getTagName() == $element->getTagName() &&
-            $value->getID() == $element->getID()) {
+        if (($value->getTagName() == $element->getTagName() &&
+            $value->getID() == $element->getID()) ||
+            !$element->isDisplayed()) {
             $element = $this->RandomElement($value);
         }
 
