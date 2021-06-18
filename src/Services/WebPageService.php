@@ -399,6 +399,35 @@ class WebPageService extends BaseEventClass
     }
 
     /**
+     * Mimic human keyboard typing
+     *
+     * @param WebDriverElement $element
+     * @param string $value
+     * @return WebDriverElement
+     */
+    public function HumanKeyboardLike(WebDriverElement $element, string $value)
+    {
+        // Set the random coordinates count
+        $count = strlen($value);
+        // Generate random coordinate
+        while ($count > 0) {
+          // Move pointer to the element
+          $this->instance->getMouse()->mouseMove($element->getCoordinates());
+          $this->instance->getMouse()->click();
+          // Fill a char to the element
+          $this->instance->getKeyboard()->sendKeys($value[$count]);
+          // Halt for few milliseconds before continue
+          $halt = rand(0.2, 0.5);
+          sleep($halt);
+          // count decrement
+          $count--;
+        }
+
+        // Return the element
+        return $element;
+    }
+
+    /**
      * An alias for quit() method
      *
      * @return void
