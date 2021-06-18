@@ -379,7 +379,7 @@ class WebPageService extends BaseEventClass
         // Move the mouse to each coordinates
         foreach ($elements as $elm) {
           // Scroll to the element position
-          $this->instance->executeScript("arguments[0].scrollIntoView(true);", $elm);
+          $this->instance->executeScript("arguments[0].scrollIntoView(true);", [$elm]);
           // Move the mouse pointer
           $this->instance->getMouse()->mouseMove($elm->getCoordinates());
           // Notify the event listener for the new coordinates
