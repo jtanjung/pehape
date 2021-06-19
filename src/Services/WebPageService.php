@@ -11,6 +11,7 @@ use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Interactions\Internal\WebDriverCoordinates;
 use Facebook\WebDriver\WebDriverElement;
 use Facebook\WebDriver\WebDriverPoint;
+use Facebook\WebDriver\WebDriverKeys;
 use Pehape\Configs\ProxyConfig;
 use Pehape\Traits\HasProxyConfig;
 use Pehape\Helpers\Util;
@@ -417,9 +418,10 @@ class WebPageService extends BaseEventClass
           // Move pointer to the element
           $this->instance->getMouse()->mouseMove($element->getCoordinates());
           $element->click();
+          $this->instance->getKeyboard()->pressKey(WebDriverKeys::END);
+
           // Fill a char to the element
-          $values .= $value[$index];
-          $element->sendKeys($values);
+          $element->sendKeys($value[$index]);
           // Halt for few milliseconds before continue
           $halt = rand(0.2, 0.5);
           sleep($halt);
