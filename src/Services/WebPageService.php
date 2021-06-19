@@ -348,7 +348,7 @@ class WebPageService extends BaseEventClass
         // Get the selected element
         $element = !count($elements) ? $this->RandomElement($value, $counter + 1) : $elements[0];
         // Return the result if the paramater is not present
-        if (! $value instanceof WebDriverElement) {
+        if (! $value instanceof WebDriverElement || $element === false) {
           return $element;
         }
         // Check if the element is unique
