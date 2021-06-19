@@ -327,10 +327,16 @@ class WebPageService extends BaseEventClass
      * Get random element of a web page
      *
      * @param WebDriverElement $value
+     * @param int $counter
      * @return WebDriverElement
      */
-  	public function RandomElement(WebDriverElement $value = null)
+  	public function RandomElement(WebDriverElement $value = null, $counter = 0)
   	{
+        // Limit the trial number
+        if ($counter == 3) {
+          return false;
+        }
+
         // Get a random selector
         $index    = array_rand(WebDriver::$selectors);
         $selector = WebDriver::$selectors[$index];
@@ -340,7 +346,7 @@ class WebPageService extends BaseEventClass
         $elements = $this->instance->findElements(WebDriverBy::xpath($selector));
         $element  = false;
         // Get the selected element
-        $element = !count($elements) ? $this->RandomElement($value) : $elements[0];
+        $element = !count($elements) ? $this->RandomElement($value, $counter + 1) : $elements[0];
         // Return the result if the paramater is not present
         if (! $value instanceof WebDriverElement) {
           return $element;
@@ -349,7 +355,7 @@ class WebPageService extends BaseEventClass
         if (($value->getTagName() == $element->getTagName() &&
             $value->getID() == $element->getID()) ||
             !$element->isDisplayed()) {
-            $element = $this->RandomElement($value);
+            $element = $this->RandomElement($value, $counter + 1);
         }
 
         // Return the element
@@ -365,13 +371,17 @@ class WebPageService extends BaseEventClass
     public function HumanMouseLike(WebDriverElement $element)
     {
         // Set the random coordinates count
-        $count = rand(5, 15);
+        $count = rand(1, 5);
         // Prepare element buffer
         $elements = [];
         // Generate random coordinate
         while ($count > 0) {
+          // Get a random element
+          $elm = $this->RandomElement($element);
           // Push a new element value to the buffer
-          $elements[] = $this->RandomElement($element);
+          if ($elm instanceof WebDriverElement) {
+            $elements[] = $elm;
+          }
           // count decrement
           $count--;
         }

@@ -40,7 +40,7 @@ class WebDriver {
      * HTML tags use for random selection
      */
     public static $selectors = [
-      'div', 'span', 'label', 'img', 
+      'div', 'span', 'label', 'img', 'h1', 'h2', 'h3', 'h4',
       'table', 'th', 'tr', 'td', 'thead', 'tbody', 'tfoot',
       'input', 'select', 'button'
     ];
