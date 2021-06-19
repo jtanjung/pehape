@@ -433,7 +433,7 @@ class WebPageService extends BaseEventClass
           // Fill a char to the element
           $element->sendKeys($value[$index]);
           // Halt for few milliseconds before continue
-          $halt = rand(0.2, 0.5);
+          $halt = rand(0.05, 0.2);
           sleep($halt);
           // count decrement
           $index++;
