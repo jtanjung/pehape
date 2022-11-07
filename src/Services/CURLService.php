@@ -27,13 +27,13 @@ class CURLService extends BaseEventClass
      * CURL Handler
      * @var int
      */
-    protected $ch;
+    public $ch;
 
     /**
      * File Handler
      * @var int
      */
-    protected $fh;
+    public $fh;
 
     /**
      * CURL response
@@ -414,6 +414,16 @@ class CURLService extends BaseEventClass
     {
         $this->max_retry = $value;
         return $this;
+    }
+
+    /**
+     * Get last URL
+     *
+     * @return string
+     */
+    public function LastUrl()
+    {
+        return curl_getinfo($this->ch, CURLINFO_EFFECTIVE_URL);
     }
 
     /**
