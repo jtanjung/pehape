@@ -47,7 +47,14 @@ abstract class BaseEventClass extends BaseClass
             throw new \InvalidArgumentException(Message::$NOT_EVENT);
         }
 
-        static::$event_listener[$key] = $value;
+        $listener = explode(' ', $key);
+        foreach ($listener as $value) {
+          $name = trim($value);
+          if ($name) {
+            static::$event_listener[$name] = $value;
+          }
+        }
+
         return $this;
     }
 
