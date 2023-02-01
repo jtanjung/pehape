@@ -48,8 +48,8 @@ abstract class BaseEventClass extends BaseClass
         }
 
         $listener = explode(' ', $key);
-        foreach ($listener as $value) {
-          $name = trim($value);
+        foreach ($listener as $val) {
+          $name = trim($val);
           if ($name) {
             static::$event_listener[$name] = $value;
           }
