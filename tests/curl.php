@@ -22,16 +22,19 @@ $curl = new CURLService();
 //return;
 
 /*******************************DOWNLOAD FILE*********************************/
-$curl->SetUrl("https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb");
+$curl->SetUrl("https://www.openstreetmap.org/api/0.6/map?bbox=116.08715992412073,-8.547587151654689,116.09165653215,-8.5430905436251");
 //Progress listener
 $curl->Bind('OnProgress', function(){
   $args = func_get_args();
   if ($args[0]->RatioReceived > 0) {
     echo "\r" . $args[0]->RatioReceived . '%(' . $args[0]->BytesReceived . '/' . $args[0]->BytesReceivedTotal . ')';
   }
+  else {
+    echo "\r" . $args[0]?->BytesReceived . '/' . $args[0]?->BytesReceivedTotal;
+  }
 });
 
 set_time_limit(0);
 echo "Downloading, please wait...\n";
-$curl->Download(realpath('../dirs/temps') . '/google-chrome.deb');
+$curl->Download(realpath('../dirs/temps') . '/map.osm');
 echo "\n";

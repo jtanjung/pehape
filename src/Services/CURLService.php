@@ -66,6 +66,12 @@ class CURLService extends BaseEventClass
     protected $error_string;
 
     /**
+     * Last URL
+     * @var string
+     */
+    protected $last_url;
+
+    /**
      * CURL request type
      * @var string
      */
@@ -423,7 +429,7 @@ class CURLService extends BaseEventClass
      */
     public function LastUrl()
     {
-        return curl_getinfo($this->ch, CURLINFO_EFFECTIVE_URL);
+        return $this->last_url;
     }
 
     /**
@@ -456,6 +462,7 @@ class CURLService extends BaseEventClass
         $this->options[ "CURLOPT_URL" ] = null;
         $this->Proxy = $this->Auth = null;
 
+        static::__trigger("OnReset", [$this->progress]);
         return $this;
     }
 
@@ -483,16 +490,19 @@ class CURLService extends BaseEventClass
           $this->http_code = curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
           $this->error_number = curl_errno($this->ch);
           $this->error_string = curl_error($this->ch);
+          $this->last_url = curl_getinfo($this->ch,  CURLINFO_EFFECTIVE_URL);
 
           // Check for request failure
           if ($this->error_string) {
-            throw new \RuntimeException($this->error_string);
+            static::__trigger("OnFail", [$this->error_string, $this->error_number]);
           }
 
         });
 
         if ($send === true) {
           $this->response_code = ResponseCode::$OK;
+
+          static::__trigger("OnResponse", [$this->response, $this->max_retry]);
 
           if (empty($this->response)) {
               if ($this->max_retry > 0) {
@@ -526,6 +536,8 @@ class CURLService extends BaseEventClass
               $this->options[ "CURLOPT_TIMEOUT" ] = 0;
               $result = $this->Execute();
               fclose($destination_file);
+
+              static::__trigger("OnDownloaded", [$destination_file]);
 
               return $result;
           }

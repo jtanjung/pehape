@@ -26,8 +26,11 @@ $driver->Bind('OnMouseMove', function($coordinate){
   $y = $coordinate->onPage()->getY();
   echo "Mouse coordinate = $x, $y \n";
 });
-$driver->Chrome()->Create()->Window(true);
+$driver->Chrome()->Create()->Window(false);
 $driver->get('https://www.google.com/');
 $doodle = $driver->findElement(WebDriverBy::tagName('img'));
 $driver->HumanMouseLike($doodle);
+$filename = realpath('../dirs/temps') . '/google.png';
+$driver->takeScreenshot($filename);
 $driver->quit();
+

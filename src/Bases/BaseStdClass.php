@@ -35,13 +35,14 @@ class BaseStdClass implements \JsonSerializable, \IteratorAggregate
     {
         $attributes = $value;
         if (! is_array($attributes) &&
-              ! is_object($attributes)) {
-            return $this;
+            ! is_object($attributes)) {
+          return $this;
         }
-        if (is_object($attributes)) {
-            $attributes = Objects::JSONToArray($attributes);
+
+        foreach ($attributes as $key => $value) {
+          $this->$key = $value;
         }
-        $this->_properties = array_merge($this->_properties, $attributes);
+
         return $this;
     }
 
@@ -52,9 +53,25 @@ class BaseStdClass implements \JsonSerializable, \IteratorAggregate
      * @param mixed $value
      * @return void
      */
-    public function __set($key, $value)
+    public function __set(string $key, $value)
     {
         $this->_properties[$key] = $value;
+        if (is_array($value)) {
+          if (!Objects::IsSequentialIndexed($value)) {
+            $this->_properties[$key] = new static($value);
+          }
+          else {
+            $data = $this->_properties[$key];
+            foreach ($data as $k => $v) {
+              if (is_array($v) && !Objects::IsSequentialIndexed($v)) {
+                $data[$k] = new static($v);
+                continue;
+              }
+              $data[$k] = $v;
+            }
+            $this->_properties[$key] = $data;
+          }
+        }
     }
 
     /**
@@ -80,23 +97,61 @@ class BaseStdClass implements \JsonSerializable, \IteratorAggregate
     }
 
     /**
-         * Serializes the object to a value that can be serialized natively by json_encode()
-         *
-         * @return array
-         */
+     * Serializes the object to a value that can be
+     * serialized natively by json_encode()
+     *
+     * @return array
+     */
     public function jsonSerialize()
     {
         return $this->_properties;
     }
 
     /**
-         *  Retrieve an external iterator
-         *
-         * @return ArrayIterator
-         */
+     *  Retrieve an external iterator
+     *
+     * @return ArrayIterator
+     */
     public function getIterator()
     {
         return new \ArrayIterator(Objects::ArrayToJSON($this->_properties));
+    }
+
+    /**
+     * Load properties from XML file.
+     *
+     * @param string $filename
+     * @return self
+     */
+    public function loadXML(string $filename)
+    {
+        $properties = simplexml_load_file($filename);
+        $this->Set($properties)->initLoad();
+        return $this;
+    }
+
+    /**
+     * Load properties from JSON file.
+     *
+     * @param string $filename
+     * @return self
+     */
+    public function loadJSON(string $filename)
+    {
+        $properties = file_get_contents($filename);
+        $properties = json_decode($properties, true);
+        $this->Set($properties)->initLoad();
+        return $this;
+    }
+
+    /**
+     * Dummy function to initialize the properties after it
+     * has been loaded from a file.
+     *
+     * @return self
+     */
+    protected function initLoad()
+    {
     }
 
     /**
