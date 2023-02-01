@@ -33,4 +33,3 @@ $driver->HumanMouseLike($doodle);
 $filename = realpath('../dirs/temps') . '/google.png';
 $driver->takeScreenshot($filename);
 $driver->quit();
-

@@ -22,7 +22,7 @@ class BaseStdClass implements \JsonSerializable, \IteratorAggregate
      */
     public function __construct($attributes = null)
     {
-        $this->Set($attributes);
+        $this->Set($attributes)->initLoad();
     }
 
     /**
@@ -126,7 +126,7 @@ class BaseStdClass implements \JsonSerializable, \IteratorAggregate
     public function loadXML(string $filename)
     {
         $properties = simplexml_load_file($filename);
-        $this->Set($properties)->initLoad();
+        $this->Set(Objects::JSONToArray($properties))->initLoad();
         return $this;
     }
 
