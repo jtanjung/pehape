@@ -1,6 +1,7 @@
 <?php namespace Pehape\Bases;
 
 use Pehape\Helpers\Objects;
+use Pehape\Helpers\File;
 
 /**
  * Class BaseStdClass
@@ -14,6 +15,12 @@ class BaseStdClass implements \JsonSerializable, \IteratorAggregate
      * @var array
      */
     protected $_properties = [];
+
+    /**
+     * File's name for the properties's source
+     * @var string
+     */
+    protected $_filename_;
 
     /**
      * Class constructor
@@ -118,6 +125,32 @@ class BaseStdClass implements \JsonSerializable, \IteratorAggregate
     }
 
     /**
+     * Save the properties to a file.
+     *
+     * @return self
+     */
+    public function save()
+    {
+        $filename         = filename($this->_filename_);
+        $filename         = dirname($this->_filename_) . "/$filename.json";
+        file_put_contents($filename, json_encode($this->_properties));
+        return $this;
+    }
+
+    /**
+     * Load the properties from a file.
+     *
+     * @param string $filename
+     * @return self
+     */
+    public function load(string $filename)
+    {
+        $extension        = strtoupper(File::Extension($filename));
+        $method           = "load$extension";
+        return $this->$method($filename)
+    }
+
+    /**
      * Load properties from XML file.
      *
      * @param string $filename
@@ -125,7 +158,8 @@ class BaseStdClass implements \JsonSerializable, \IteratorAggregate
      */
     public function loadXML(string $filename)
     {
-        $properties = simplexml_load_file($filename);
+        $this->_filename_ = $filename;
+        $properties = simplexml_load_file($this->_filename_);
         $this->Set(Objects::JSONToArray($properties))->initLoad();
         return $this;
     }
@@ -138,7 +172,8 @@ class BaseStdClass implements \JsonSerializable, \IteratorAggregate
      */
     public function loadJSON(string $filename)
     {
-        $properties = file_get_contents($filename);
+        $this->_filename_ = $filename;
+        $properties = file_get_contents($this->_filename_);
         $properties = json_decode($properties, true);
         $this->Set($properties)->initLoad();
         return $this;

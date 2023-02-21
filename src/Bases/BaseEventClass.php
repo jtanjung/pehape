@@ -239,7 +239,7 @@ abstract class BaseEventClass extends BaseClass
      * @param string $method
      * @return mixed
      */
-    protected function __callContext(&$method)
+    protected function __callContext($method)
     {
         if (method_exists($this, $method)) {
           return $this;
@@ -267,4 +267,5 @@ abstract class BaseEventClass extends BaseClass
         $this->__safeCall(array($context, $method), $result, $args);
         return static::__trigger("On" . ucfirst($method), $args, $result);
     }
+    
 }

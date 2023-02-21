@@ -1,6 +1,38 @@
 <?php
 require_once "../vendor/autoload.php";
 
+use Pehape\Bases\BaseStdClass;
+
+class A extends BaseStdClass {
+
+  protected function initLoad(){
+    if (isset($this->_properties['@attributes'])) {
+      $this->Set($this->_properties['@attributes']);
+      unset($this->_properties['@attributes']);
+    }
+  }
+
+  public function findNodeById(string $id)
+  {
+      foreach ($this->node as $value) {
+        if ($value->id === $id) {
+          return $value;
+        }
+      }
+  }
+}
+
+$a = new A();
+$a->loadXML('map.osm');
+$ref = $a->way[0]->nd[0]->ref;
+var_dump($a->findNodeById($ref));
+exit;
+ob_start(function($c){
+  file_put_contents('map.json', $c);
+});
+var_dump($a->way);
+ob_end_flush();
+
 use Pehape\Services\WebPageService;
 use Facebook\WebDriver\WebDriverBy;
 
