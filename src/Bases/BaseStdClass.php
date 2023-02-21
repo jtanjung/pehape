@@ -147,7 +147,7 @@ class BaseStdClass implements \JsonSerializable, \IteratorAggregate
     {
         $extension        = strtoupper(File::Extension($filename));
         $method           = "load$extension";
-        return $this->$method($filename)
+        return $this->$method($filename);
     }
 
     /**
